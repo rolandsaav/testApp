@@ -41,6 +41,6 @@ export default FeedScreen
 
 const styles = StyleSheet.create({
     feed: {
-
+      paddingTop: 10
     }
 })

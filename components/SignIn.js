@@ -1,9 +1,23 @@
 import { Button, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, {useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
+import { auth } from '../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { AuthContext } from './AuthContext'
 
 const SignIn = ({navigation}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const {user, setUser} = useContext(AuthContext)
+
+    const handleSignIn = () => {
+        signInWithEmailAndPassword(auth, email, password)
+        .then(userCredentials => {
+            const him = userCredentials.user;
+            console.log(`Logged in as ${him.email}!`);
+            setUser(him)
+        })
+        .catch(error => console.log(error))
+    }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -13,7 +27,7 @@ const SignIn = ({navigation}) => {
         <View style={styles.inputContainer}>
             <TextInput style={styles.text} placeholder="Email" placeholderTextColor={"#4a4a4a"} onChangeText={e => setEmail(e)}/>
             <TextInput style={styles.text} placeholder="Password" placeholderTextColor={"#4a4a4a"} onChangeText={text => {setPassword(text)}} secureTextEntry/>
-            <Pressable  style={styles.button} >
+            <Pressable onPress={handleSignIn}  style={styles.button} >
                 <Text style={styles.buttonText}>Sign In</Text>
             </Pressable>
             <Pressable  style={styles.button} onPress={() => navigation.navigate("SignUp")}>

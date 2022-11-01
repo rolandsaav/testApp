@@ -1,17 +1,33 @@
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const SignUp = ({navigation}) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPw, setConfirmPw] = useState('')
+
+    const handleSignUp = () => {
+        createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredentials => {
+            const user = userCredentials.user;
+            console.log(user.email);
+        })
+        .catch(error => console.log(error));
+    }
+
   return (
     <KeyboardAvoidingView style={styles.container}>
         <View style={styles.title}>
             <Text style={styles.titleText}>Small Step</Text>
         </View>
-        <TextInput style={styles.text} placeholder="Name" placeholderTextColor={"#4a4a4a"}/>
-        <TextInput style={styles.text} placeholder="Email" placeholderTextColor={"#4a4a4a"}/>
-        <TextInput style={styles.text} placeholder="Password" placeholderTextColor={"#4a4a4a"} secureTextEntry/>
-        <TextInput style={styles.text} placeholder="Confirm Password" placeholderTextColor={"#4a4a4a"} secureTextEntry/>
-        <Pressable  style={styles.button} >
+        <TextInput style={styles.text} placeholder="Name" placeholderTextColor={"#4a4a4a"} onChangeText={text => setName(text)}/>
+        <TextInput style={styles.text} placeholder="Email" placeholderTextColor={"#4a4a4a"} onChangeText={text => setEmail(text)}/>
+        <TextInput style={styles.text} placeholder="Password" placeholderTextColor={"#4a4a4a"} onChangeText={text => setPassword(text)} secureTextEntry/>
+        <TextInput style={styles.text} placeholder="Confirm Password" placeholderTextColor={"#4a4a4a"} onChangeText={text => setConfirmPw(text)} secureTextEntry/>
+        <Pressable onPress={handleSignUp}  style={styles.button} >
             <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
         <Pressable  style={styles.button} onPress={() => navigation.navigate("SignIn")}>
